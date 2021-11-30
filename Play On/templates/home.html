@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<h1>Homepage</h1>
+{% block title %}
+Home
 {% endblock %}
 
 {% block body %}
-<body>Hello</body>
+<div class="content">
+    <h1>All videos to be displayed here</h1>
+</div>
+<div class="content" id="videos">
+    {% if filename %}
+	<div style="margin: 10px auto;">
+        <br>
+		<video autoplay="autoplay" controls="controls" preload="preload">
+			<source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4"></source>
+		</video>
+	</div>
+    {% endif %}
+</div>
 {% endblock %}
