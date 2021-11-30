@@ -35,7 +35,7 @@ body {
     text-align: center;
     background-color: #ddd;
     padding: 10px;
-    height: 200px; /* Should be removed. Only for demonstration */
+    height: 250px; /* Should be removed. Only for demonstration */
   }
   
   /* Style the footer */
@@ -47,7 +47,7 @@ body {
   .header {
     padding: 15px;
     text-align: center;
-    background: dimgray;
+    background: #0066ba;
     color: white;
     font-size: 30px;
   }
@@ -55,4 +55,31 @@ body {
     text-align: center;
     color: #D8000C;
     background-color: #FFD2D2;
-}
+  }
+  .button {
+    background-color: #0066ba; /* Green */
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  .button1 {
+    background-color: #ddd; 
+    color: black; 
+    border: 2px solid #0066ba;
+  }
+  .button1:hover {
+    background-color: #0066ba;
+    color: white;
+  }
+  .message {
+    text-align: center;
+    color: #2800d8;
+    background-color: #FFD2D2;
+  }

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block body %}
+
+<div class="content">  
+    <h2>Upload Video</h2> 
+    <form method="POST" action="/add_video" enctype="multipart/form-data">
+        <dl>
+            <input type="file" name="file" autocomplete="off" required>
+        </dl> 
+            <label class="content" for="title">Title of Video</label>
+            <br>
+            <input class="button button1" type="text" name="title" required>
+            <br>
+            <input class='button' type="submit" value="Upload Video">
+    </form>
+</div> 
+{% endblock %}
