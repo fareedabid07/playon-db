@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ video_details.title }}
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1>{{ video_details.title }} by {{ video_details.login_id }}</h1>
+<div class="container" id="videos">
+    <video controls="controls" preload="auto">
+        <source src="{{ url_for('display_video', filename=video_details.filename) }}" type="video/mp4"></source>
+    </video>
+    <form>
+        <p class="content">
+            Likes: {{ video_details.num_likes }}    
+            Comments: {{ video_details.num_comments }}  <br>
+            Uploaded: {{ video_details.upload_date }}  
+            <br>
+            <a class='likecom' href="#">Like</a>
+            <a class='likecom' href="#">Comment</a>
+            <br>
+            <br>
+            {% if session.is_admin %}
+            <a href="#">Remove Video</a>
+            <a href="#">Ban User</a>
+            {% endif %}
+        </p>
+    </form>
+</div>
+</div>
+{% endblock %}

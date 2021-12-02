@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Log into Account{% endblock %}
+
+{% block body %}
+<div class="content">
+    <form method="POST" action="">
+        <label for="login_id">Login ID</label><br>
+        <input type="text" name="login_id" id="login_id" /><br>
+
+        <label for="password">Password</label><br>
+        <input type="text" name="password" id="password" /><br>
+
+        <br>
+        <input class="button button1" type="submit" value="Log In">
+    </form>
+</div>
+<div class="footer">
+    <a href="login/admin"> Log in as admin</a>
+</div>
+{% endblock %}
