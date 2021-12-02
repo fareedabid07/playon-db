@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block body %}
+
+<div class="content">  
+    <h1 class='content'>Welcome {{ session['login_id'] }}</h1>
+    <h2>Upload Video</h2> 
+    <form method="POST" action="/upload_video" enctype="multipart/form-data">
+        <dl>
+            <input type="file" name="file" autocomplete="off" required>
+        </dl> 
+            <label class="content" for="title">Title of Video</label>
+            <br>
+            <input class="button button1" type="text" name="title" required>
+            <br>
+            <input class='button' type="submit" value="Upload Video">
+    </form>
+</div> 
+<div class="content" id="videos">
+    
+    {% if filename %}
+    <div style="margin: 10px auto;">
+        <br>
+        <video controls="controls" preload="auto">
+            <source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4"></source>
+        </video>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1>All videos to be displayed here</h1>
+<div class="container" id="videos">
+    {% for videos in videos %}
+    <div class="content">
+        <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by {{ videos.login_id }}</h3>
+
+    </div>
+    <video controls="controls" preload="auto">
+        <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/mp4"></source>
+    </video>
+    <form>
+        <p class="content">
+            Likes: {{ videos.num_likes }}    
+            Comments: {{ videos.num_comments }}  <br>
+            Uploaded: {{ videos.upload_date }}  
+            <br>
+            <br>
+            {% if session.is_admin %}
+            <a href="#">Remove Video</a>
+            <a href="#">Ban User</a>
+            {% endif %}
+        </p>
+    </form>
+    <hr>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}
