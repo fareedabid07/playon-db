@@ -7,15 +7,24 @@ Home
 {% block body %}
 <div class="content">
     <h1>All videos to be displayed here</h1>
+<div class="container" id="videos">
+    {% for videos in videos %}
+    <div class="content">
+        <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by {{ videos.login_id }}</h3>
+
+    </div>
+    <video controls="controls" preload="auto">
+        <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/mp4"></source>
+    </video>
+    <form>
+        <p class="content">
+            Likes: {{ videos.num_likes }}    
+            Comments: {{ videos.num_comments }}  <br>
+            Uploaded: {{ videos.upload_date }}  
+        </p>
+    </form>
+    <hr>
+    {% endfor %}
 </div>
-<div class="content" id="videos">
-    {% if filename %}
-	<div style="margin: 10px auto;">
-        <br>
-		<video autoplay="autoplay" controls="controls" preload="preload">
-			<source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4"></source>
-		</video>
-	</div>
-    {% endif %}
 </div>
 {% endblock %}
