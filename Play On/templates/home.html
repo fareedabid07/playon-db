@@ -10,8 +10,7 @@ Home
 <div class="container" id="videos">
     {% for videos in videos %}
     <div class="content">
-        <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by {{ videos.login_id }}</h3>
-
+        <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by <a href="{{ url_for('profile', login_id=videos.login_id) }}"> {{ videos.login_id }} </a> </h3>
     </div>
     <video controls="controls" preload="auto">
         <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/mp4"></source>

@@ -172,7 +172,7 @@ def upload_video():
     mysql.connection.commit()
     cur.close()
 
-    return render_template('profile.html', filename=filename)
+    return render_template('profile.html', login_id=session['login_id'], filename=filename)
 
 @app.route('/display_video/<filename>')
 @check_logged_in
@@ -193,7 +193,13 @@ def video(video_id):
 @app.route('/profile/<login_id>')
 @check_logged_in
 def profile(login_id):
-    return render_template('profile.html')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM videos WHERE login_id = %s", [login_id])
+    videos = cur.fetchall()
+    cur.close()
+
+    return render_template('profile.html', login_id=login_id, videos=videos)
+
 
 @app.route('/like/<video_id>')
 @check_logged_in
@@ -247,7 +253,6 @@ def ban(client_id):
     cur.close()
     
     return redirect(url_for('homepage'))
-
 
 
 if __name__ == "__main__":

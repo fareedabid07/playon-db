@@ -6,6 +6,7 @@ Profile
 
 {% block body %}
 
+{% if session['login_id'] == login_id %}
 <div class="content">  
     <h1 class='content'>Welcome {{ session['login_id'] }}</h1>
     <h2>Upload Video</h2> 
@@ -20,7 +21,9 @@ Profile
             <input class='button' type="submit" value="Upload Video">
     </form>
 </div> 
-<div class="content" id="videos">
+{% endif %}
+
+<div class="content" id="video">
     
     {% if filename %}
     <div style="margin: 10px auto;">
@@ -30,5 +33,26 @@ Profile
         </video>
     </div>
     {% endif %}
+</div>
+
+<div class="content">
+<div class="container" id="videos">
+    {% for videos in videos %}
+    <div class="content">
+        <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by <a href="{{ url_for('profile', login_id=videos.login_id) }}"> {{ videos.login_id }}</a> </h3>
+    </div>
+    <video controls="controls" preload="auto">
+        <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/mp4"></source>
+    </video>
+    <form>
+        <p class="content">
+            Likes: {{ videos.num_likes }}    
+            Comments: {{ videos.num_comments }}  <br>
+            Uploaded: {{ videos.upload_date }}  
+        </p>
+    </form>
+    <hr>
+    {% endfor %}
+</div>
 </div>
 {% endblock %}
