@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS `play_on`.`videos` (
+  `video_id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(45) NOT NULL,
+  `uploader_id` INT NOT NULL,
+  `login_id` VARCHAR(45) NOT NULL,
+  `num_likes` INT NOT NULL DEFAULT 0,
+  `num_comments` INT NOT NULL DEFAULT 0,
+  `upload_date` DATE NOT NULL,
+  `filename` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`video_id`),
+  UNIQUE INDEX `video_id_UNIQUE` (`video_id` ASC) VISIBLE,
+  INDEX `client_id_idx` (`uploader_id` ASC) VISIBLE,
+  CONSTRAINT `uploader_id`
+    FOREIGN KEY (`uploader_id`)
+    REFERENCES `play_on`.`clients` (`client_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
