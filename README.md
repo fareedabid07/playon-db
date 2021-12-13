@@ -1,2 +1,2 @@
-# Group-30-Deliverable1
-Databases first deliverable
+# Group-30-Deliverable
+Databases deliverable
