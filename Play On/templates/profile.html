@@ -47,13 +47,18 @@ Profile
         <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by <a href="{{ url_for('profile', login_id=videos.login_id) }}"> {{ videos.login_id }}</a> </h3>
     </div>
     <video controls="controls" preload="auto">
+        <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/webm"></source>
         <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/mp4"></source>
     </video>
     <form>
         <p class="content">
             Likes: {{ videos.num_likes }}    
             Comments: {{ videos.num_comments }}  <br>
-            Uploaded: {{ videos.upload_date }}  
+            Uploaded: {{ videos.upload_date }}  <br>
+
+            {% if session['login_id'] == login_id %}
+            <a class='likecom' href="{{ url_for('delete_video', video_id=videos.video_id) }}">Remove Video</a>
+            {% endif %}
         </p>
     </form>
     <hr>

@@ -42,8 +42,17 @@ def register():
             return render_template('register.html')
 
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO clients(name, login_id, password) VALUES (%s, %s, %s)", (name, login_id, password))
-        mysql.connection.commit()
+        
+        cur.execute("SELECT * FROM clients WHERE login_id = %s", [login_id])
+        result = cur.fetchone()
+
+        if result == 0:
+            cur.execute("INSERT INTO clients(name, login_id, password) VALUES (%s, %s, %s)", (name, login_id, password))
+            mysql.connection.commit()
+        else:
+            flash('Please choose a different Login ID, already taken')
+            return render_template("register.html")
+        
         cur.close()
         return redirect('/')
 
@@ -191,6 +200,10 @@ def search():
         videos = videos + result
     cur.close()
 
+    if videos == ():
+        flash('No search results found')
+        return redirect(url_for('homepage'))
+
     return render_template('home.html', videos=videos)
 
 @app.route('/display_video/<filename>')
@@ -255,7 +268,7 @@ def check_is_admin(arg):
             return redirect('/')
     return wrap
 
-@app.route('/delete/<video_id>')
+@app.route('/admin/delete/<video_id>')
 @check_logged_in
 @check_is_admin
 def delete(video_id):
@@ -265,6 +278,23 @@ def delete(video_id):
     cur.close()
 
     return redirect(url_for('homepage'))
+
+@app.route('/user/delete/<video_id>')
+@check_logged_in
+def delete_video(video_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM videos WHERE video_id = %s", [video_id])
+    result = cur.fetchone()
+    client_id = result['uploader_id']
+
+    if client_id == session['client_id']:
+        cur.execute("DELETE FROM videos WHERE video_id = %s", [video_id])
+        mysql.connection.commit()
+        flash('Video removed successfully')
+
+    cur.close()
+
+    return redirect(url_for('profile', login_id=session['login_id']))
 
 @app.route('/ban/<client_id>')
 @check_logged_in
