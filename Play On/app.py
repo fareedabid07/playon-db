@@ -82,6 +82,7 @@ def login():
                 session['login_id'] = login_details['login_id']
                 session['is_admin'] = False
                 session['client_id'] = details['client_id']
+                session['name'] = details['name']
 
                 return redirect(url_for('homepage'))
 
@@ -215,11 +216,14 @@ def display_video(filename):
 @check_logged_in
 def video(video_id):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM videos WHERE video_id = %s", [video_id])
+    result = cur.execute("SELECT * FROM videos WHERE video_id = %s", [video_id])
     video_details = cur.fetchone()
+    result2 = cur.execute("SELECT * FROM comments WHERE video_id = %s", [video_id])
+    comment_details = cur.fetchall()
     cur.close()
     
-    return render_template('video.html', video_details=video_details)
+    return render_template('video.html', video_details=video_details, comment_details=comment_details)
+
 
 @app.route('/profile/<login_id>')
 @check_logged_in
@@ -258,6 +262,30 @@ def like(video_id):
 
     return redirect(url_for('video', video_id=video_details['video_id']))
 
+@app.route('/comment/<video_id>', methods=['GET','POST'])
+@check_logged_in
+def comment(video_id):
+    cur = mysql.connection.cursor()
+    result = cur.execute("SELECT * FROM videos WHERE video_id = %s", [video_id])
+    video_details = cur.fetchone()
+    noofcomments = video_details['num_comments']
+    if request.method== 'POST':
+        comment_details= request.form
+        contents= comment_details['comment']
+        if contents == "":
+            flash('Please enter comment')
+        else:
+            
+            noofcomments+=1
+            cur.execute("INSERT INTO comments(video_id, client_id, login_id, content) VALUES (%s, %s, %s, %s)", (video_id, session['client_id'], session['login_id'], contents ))
+            cur.execute("UPDATE videos SET num_comments = %s WHERE video_id = %s", (noofcomments, video_id))
+            mysql.connection.commit()
+
+    cur.close()
+
+    return redirect(url_for('video', video_id=video_details['video_id'])) 
+
+
 @app.route('/subscribe/<client_id>/<video_id>')
 @check_logged_in
 def subscribe(client_id, video_id):
@@ -276,11 +304,19 @@ def subscribe(client_id, video_id):
         cur.execute("UPDATE clients SET num_subs = %s WHERE client_id = %s", (subscribers, client_id))
         cur.execute("INSERT INTO subscribers(client_id, subscriber_id) VALUES (%s, %s)", ([client_id], [session['client_id']]))
         mysql.connection.commit()
+        flash("Subscribed")
+
+    else:
+        subscribers-=2
+        cur.execute("UPDATE clients SET num_subs = %s WHERE client_id = %s", (subscribers, client_id))
+        cur.execute("DELETE FROM subscribers WHERE client_id = %s AND subscriber_id = %s", ([client_id], session['client_id']))
+        mysql.connection.commit()
+        flash('Unsubscribed')
 
     cur.close()
-    flash("Subscribed")
     
     return redirect(url_for('video', video_id=video_details['video_id']))
+
 
 def check_is_admin(arg):
     @wraps(arg)
@@ -326,7 +362,7 @@ def delete_video(video_id):
 def ban(client_id):
     cur = mysql.connection.cursor()
     cur.execute("DELETE FROM clients WHERE client_id = %s", [client_id])
-    cur.execute("INSERT INTO banned_users(admin_id, client_id) VALUES (%s, %s)", (session['admin_id'], session['client_id']))
+    cur.execute("INSERT INTO banned_users(admin_id, client_id) VALUES (%s, %s)", (session['admin_id'], [client_id]))
     mysql.connection.commit()
     cur.close()
     

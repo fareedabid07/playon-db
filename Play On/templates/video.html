@@ -29,6 +29,24 @@
             {% endif %}
         </p>
     </form>
+    <form  method="POST" action="{{ url_for('comment', video_id=video_details.video_id) }}">
+        <div>
+            <textarea name="comment" id="comment" >
+             Comment
+            </textarea>
+        </div>
+            <input class='likecom' type="submit" value="Add Comment" formaction="{{ url_for('comment', video_id=video_details.video_id) }}">
+           
+    </form>
+    <h3>
+        Comments
+    </h3>
+    <div>
+        {% for comment in comment_details %}
+        <p class="content">{{comment.login_id}} :     {{comment.content}}</p>
+        <br>
+        {% endfor %}
+    </div>
 </div>
 </div>
 {% endblock %}

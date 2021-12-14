@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS `play_on`.`videos` ;
 
 CREATE TABLE IF NOT EXISTS `play_on`.`videos` (
   `video_id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(45) NOT NULL,
+  `title` VARCHAR(200) NOT NULL,
   `uploader_id` INT NOT NULL,
   `login_id` VARCHAR(45) NOT NULL,
   `num_likes` INT NOT NULL DEFAULT 0,
@@ -50,29 +50,6 @@ CREATE TABLE IF NOT EXISTS `play_on`.`videos` (
   INDEX `client_id_idx` (`uploader_id` ASC) VISIBLE,
   CONSTRAINT `uploader_id`
     FOREIGN KEY (`uploader_id`)
-    REFERENCES `play_on`.`clients` (`client_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `play_on`.`watch_history`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `play_on`.`watch_history` ;
-
-CREATE TABLE IF NOT EXISTS `play_on`.`watch_history` (
-  `video_id` INT NOT NULL,
-  `client_id` INT NOT NULL,
-  PRIMARY KEY (`video_id`, `client_id`),
-  INDEX `client_id_idx` (`client_id` ASC) VISIBLE,
-  CONSTRAINT `video_id_history`
-    FOREIGN KEY (`video_id`)
-    REFERENCES `play_on`.`videos` (`video_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `client_id_history`
-    FOREIGN KEY (`client_id`)
     REFERENCES `play_on`.`clients` (`client_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
@@ -137,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `play_on`.`admin` (
   `password` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`admin_id`))
 ENGINE = InnoDB;
-
+INSERT INTO `admin` VALUES (1, "admin 1", "admin1login", "admin1pwd");
 
 -- -----------------------------------------------------
 -- Table `play_on`.`banned_users`
@@ -146,17 +123,12 @@ DROP TABLE IF EXISTS `play_on`.`banned_users` ;
 
 CREATE TABLE IF NOT EXISTS `play_on`.`banned_users` (
   `client_id` INT NOT NULL,
-  `admin_id` INT NULL,
+  `admin_id` INT NOT NULL,
   PRIMARY KEY (`client_id`),
   INDEX `admin_id_idx` (`admin_id` ASC) VISIBLE,
   CONSTRAINT `admin_id`
     FOREIGN KEY (`admin_id`)
     REFERENCES `play_on`.`admin` (`admin_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `banned_client_id`
-    FOREIGN KEY (`client_id`)
-    REFERENCES `play_on`.`clients` (`client_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -168,11 +140,13 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `play_on`.`comments` ;
 
 CREATE TABLE IF NOT EXISTS `play_on`.`comments` (
+  `comment_id` INT NOT NULL AUTO_INCREMENT,
   `video_id` INT NOT NULL,
   `client_id` INT NOT NULL,
+  `login_id` VARCHAR(45) NOT NULL,
   `content` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`video_id`, `client_id`),
-  INDEX `client_id_idx` (`client_id` ASC) VISIBLE,
+  PRIMARY KEY (`comment_id`),
+  INDEX `comment_id_idx` (`comment_id` ASC) VISIBLE,
   CONSTRAINT `video_id_comment`
     FOREIGN KEY (`video_id`)
     REFERENCES `play_on`.`videos` (`video_id`)
@@ -194,36 +168,13 @@ DROP TABLE IF EXISTS `play_on`.`deleted_videos` ;
 CREATE TABLE IF NOT EXISTS `play_on`.`deleted_videos` (
   `video_id` INT NOT NULL,
   `admin_id` INT NULL,
-  `reason` VARCHAR(45) NOT NULL,
+  `reason` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`video_id`),
   INDEX `admin_id_idx` (`admin_id` ASC) VISIBLE,
   CONSTRAINT `admin_id_del`
     FOREIGN KEY (`admin_id`)
     REFERENCES `play_on`.`admin` (`admin_id`)
     ON DELETE SET NULL
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `play_on`.`watchlater`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `play_on`.`watchlater` ;
-
-CREATE TABLE IF NOT EXISTS `play_on`.`watchlater` (
-  `video_id` INT NOT NULL,
-  `client_id` INT NOT NULL,
-  PRIMARY KEY (`video_id`, `client_id`),
-  INDEX `client_id_idx` (`client_id` ASC) VISIBLE,
-  CONSTRAINT `video_id_wl`
-    FOREIGN KEY (`video_id`)
-    REFERENCES `play_on`.`videos` (`video_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `client_id_wl`
-    FOREIGN KEY (`client_id`)
-    REFERENCES `play_on`.`clients` (`client_id`)
-    ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
