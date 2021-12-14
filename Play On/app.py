@@ -46,10 +46,10 @@ def register():
         cur.execute("SELECT * FROM clients WHERE login_id = %s", [login_id])
         result = cur.fetchone()
 
-        if result == 0:
+        if result == None:
             cur.execute("INSERT INTO clients(name, login_id, password) VALUES (%s, %s, %s)", (name, login_id, password))
             mysql.connection.commit()
-        else:
+        else: 
             flash('Please choose a different Login ID, already taken')
             return render_template("register.html")
         
