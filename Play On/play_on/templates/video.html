@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ video_details.title }}
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1>{{ video_details.title }} by {{ video_details.login_id }}</h1>
+<div class="container" id="videos">
+    <video controls width="640" height="480">
+        <source src="{{ url_for('display_video', filename=video_details.filename) }}" type="video/webm"></source>
+        <source src="{{ url_for('display_video', filename=video_details.filename) }}" type="video/mp4"></source>
+    </video>
+    
+    <form>
+        <p class="content">
+            Likes: {{ video_details.num_likes }}    
+            Comments: {{ video_details.num_comments }}  <br>
+            Uploaded: {{ video_details.upload_date }}  
+            <br>
+            {% if session.is_admin %}
+            <a class='likecom' href="{{ url_for('delete', video_id=video_details.video_id) }}">Remove Video</a>
+            <a class='likecom' href="{{ url_for('ban', client_id=video_details.uploader_id) }}">Ban User</a>
+            {% else: %}
+            <a class='likecom' href="{{ url_for('like', video_id=video_details.video_id) }}">Like</a>
+            <a class='likecom' href="#">Comment</a>
+            <a class='likecom' href="{{ url_for('subscribe', client_id=video_details.uploader_id, video_id = video_details.video_id) }}">Subscribe</a>
+            {% endif %}
+        </p>
+    </form>
+    <form  method="POST" action="{{ url_for('comment', video_id=video_details.video_id) }}">
+        <div>
+            <textarea name="comment" id="comment" >
+             Comment
+            </textarea>
+        </div>
+            <input class='likecom' type="submit" value="Add Comment" formaction="{{ url_for('comment', video_id=video_details.video_id) }}">
+           
+    </form>
+    <h3>
+        Comments
+    </h3>
+    <div>
+        {% for comment in comment_details %}
+        <p class="content">{{comment.login_id}} :     {{comment.content}}</p>
+        <br>
+        {% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

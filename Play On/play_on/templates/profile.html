@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block body %}
+
+{% if session['login_id'] == login_id %}
+<div class="content">  
+    <h1 class='content'>Welcome {{ session['login_id'] }}</h1>
+    <h2>Upload Video</h2> 
+    <form method="POST" action="/upload_video" enctype="multipart/form-data">
+        <dl>
+            <input type="file" name="file" autocomplete="off" required>
+        </dl> 
+            <label class="content" for="title">Title of Video</label>
+            <br>
+            <input class="button button1" type="text" name="title" required>
+            <br>
+            <input class='button' type="submit" value="Upload Video">
+    </form>
+</div> 
+{% endif %}
+
+<div class="content" id="video">
+    
+    {% if filename %}
+    <div style="margin: 10px auto;">
+        <br>
+        <video controls="controls" preload="auto">
+            <source src="{{ url_for('display_video', filename=filename) }}" type="video/webm"></source>
+        </video>
+    </div>
+
+    <div style="margin: 10px auto;">
+        <br>
+        <img src="{{ url_for('display_video', filename=filename) }}" alt="image">
+    </div>
+    {% endif %}
+</div>
+
+<div class="content">
+<div class="container" id="videos">
+    {% for videos in videos %}
+    <div class="content">
+        <h3><a href="{{ url_for('video', video_id=videos.video_id) }}">{{ videos.title }}</a> by <a href="{{ url_for('profile', login_id=videos.login_id) }}"> {{ videos.login_id }}</a> </h3>
+    </div>
+    <video controls="controls" preload="auto">
+        <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/webm"></source>
+        <source src="{{ url_for('display_video', filename=videos.filename) }}" type="video/mp4"></source>
+    </video>
+    <form>
+        <p class="content">
+            Likes: {{ videos.num_likes }}    
+            Comments: {{ videos.num_comments }}  <br>
+            Uploaded: {{ videos.upload_date }}  <br>
+
+            {% if session['login_id'] == login_id %}
+            <a class='likecom' href="{{ url_for('delete_video', video_id=videos.video_id) }}">Remove Video</a>
+            {% endif %}
+        </p>
+    </form>
+    <hr>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}
